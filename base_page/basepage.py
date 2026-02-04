@@ -12,10 +12,11 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
         # self.logger = get_logger(self.__class__.__name__)
+        self.logger = get_logger()
 
     # 封装访问URL：
     def open(self, url):
-        # self.logger.info(f"打开页面{url}")
+        self.logger.info(f"打开页面{url}")
         self.driver.get(url)
 
     # 封装定位元素
