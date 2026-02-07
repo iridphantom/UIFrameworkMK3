@@ -1,4 +1,3 @@
-
 from selenium import webdriver
 from base_page.basepage import BasePage
 

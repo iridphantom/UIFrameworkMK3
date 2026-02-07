@@ -1,0 +1,127 @@
+FAILED                   [ 66%]2026-02-07 17:45:30,492 - INFO - 打开页面http://39.101.122.147:3000/material/material
+
+test_openurl.py:35 (TestErp.test_02_add_product_1)
+self = <test_cases.test_openurl.TestErp testMethod=test_02_add_product_1>
+name = '美式冷萃咖啡液', standard = '80*80', unit = '箱', stock = 200
+
+    @file_data('../test_data/material.yaml')
+    def test_02_add_product(self, name, standard, unit, stock):
+>       self.add_material.add_product(name, standard, unit, stock)
+
+test_openurl.py:38:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\page_object\add_material.py:42: in add_product
+    self.input(*self.material_stock, content=stock)
+..\base_page\basepage.py:29: in input
+    self.locator(by, value).send_keys(content)
+D:\DevelopmentEnvironment\python3.12.8\Lib\site-packages\selenium\webdriver\remote\webelement.py:276: in send_keys
+    self._execute(
+D:\DevelopmentEnvironment\python3.12.8\Lib\site-packages\selenium\webdriver\remote\webelement.py:508: in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\DevelopmentEnvironment\python3.12.8\Lib\site-packages\selenium\webdriver\remote\webdriver.py:432: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x0000026663826B10>
+response = {'status': 400, 'value': '{"value":{"error":"element not interactable","message":"Element <div class=\\"td\\"> is not ...ys.mjs:610:29\\nreceiveMessage@chrome://remote/content/marionette/actors/MarionetteCommandsChild.sys.mjs:269:31\\n"}}'}
+
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
+
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
+
+        Raises:
+            WebDriverException: If the response contains an error message.
+        """
+        status = response.get("status", None)
+        if not status or status == ErrorCode.SUCCESS:
+            return
+        value = None
+        message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get("value", None)
+            if value_json and isinstance(value_json, str):
+                try:
+                    value = json.loads(value_json)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
+                except ValueError:
+                    pass
+
+        exception_class: type[WebDriverException]
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
+        else:
+            exception_class = WebDriverException
+
+        if not value:
+            value = response["value"]
+        if isinstance(value, str):
+            raise exception_class(value)
+        if message == "" and "message" in value:
+            message = value["message"]
+
+        screen = None  # type: ignore[assignment]
+        if "screen" in value:
+            screen = value["screen"]
+
+        stacktrace = None
+        st_value = value.get("stackTrace") or value.get("stacktrace")
+        if st_value:
+            if isinstance(st_value, str):
+                stacktrace = st_value.split("\n")
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
+                        if line:
+                            file = f"{file}:{line}"
+                        meth = frame.get("methodName", "<anonymous>")
+                        if "className" in frame:
+                            meth = f"{frame['className']}.{meth}"
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
+        if exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if "data" in value:
+                alert_text = value["data"].get("text")
+            elif "alert" in value:
+                alert_text = value["alert"].get("text")
+            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.ElementNotInteractableException: Message: Element <div class="td"> is not reachable by keyboard; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementnotinteractableexception
+E       Stacktrace:
+E       RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
+E       WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:202:5
+E       ElementNotInteractableError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:371:5
+E       webdriverSendKeysToElement@chrome://remote/content/marionette/interaction.sys.mjs:667:13
+E       interaction.sendKeysToElement@chrome://remote/content/marionette/interaction.sys.mjs:639:11
+E       sendKeysToElement@chrome://remote/content/marionette/actors/MarionetteCommandsChild.sys.mjs:610:29
+E       receiveMessage@chrome://remote/content/marionette/actors/MarionetteCommandsChild.sys.mjs:269:31
+
+D:\DevelopmentEnvironment\python3.12.8\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:232: ElementNotInteractableException

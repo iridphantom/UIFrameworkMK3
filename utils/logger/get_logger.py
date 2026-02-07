@@ -13,23 +13,19 @@ _is_configured = False
 
 
 def get_logger(name="uiLogger"):
-    """
-    获取 logger 实例
-    :param name: logger 名称，对应 log_conf.ini 中的 qualname
-    """
     global _is_configured
 
     if not _is_configured:
-        # 确保 logs 目录存在
         log_dir = os.path.join(BASE_DIR, "logs")
         os.makedirs(log_dir, exist_ok=True)
 
-        # 当前日期
         today = datetime.now().strftime("%Y-%m-%d")
-        ui_log = os.path.join(log_dir, f"{today}_ui_test.log")
-        error_log = os.path.join(log_dir, f"{today}_error.log")
+        ui_log = os.path.join(log_dir, f"{today}_ui_test.log").replace("\\", "/")
+        error_log = os.path.join(log_dir, f"{today}_error.log").replace("\\", "/")
+
         logging.config.fileConfig(
             LOG_CONF_PATH,
+            encoding="utf-8",
             disable_existing_loggers=False,
             defaults={
                 "ui_log": ui_log,

@@ -4,6 +4,8 @@ from ddt import file_data, ddt
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 
+from page_object.add_material import add_product
+from page_object.logout import Logout
 from page_object.open_page import open_url
 from utils.browser.browser_options import firefox_options
 from utils.browser.driver_factory import create_firefox_options
@@ -18,6 +20,8 @@ class TestErp(unittest.TestCase):
 
         cls.driver = create_firefox_options()
         cls.login_page = open_url(cls.driver)
+        cls.add_material = add_product(cls.driver)
+        cls.logout = Logout(cls.driver)
 
     @classmethod
     def tearDownClass(cls):
@@ -28,6 +32,13 @@ class TestErp(unittest.TestCase):
     def test_01_login(self, username, password):
         self.login_page.login(username, password)
 
+    # 添加商品
+    @file_data('../test_data/material.yaml')
+    def test_02_add_product(self, name, standard, unit, stock):
+        self.add_material.add_product(name, standard, unit, stock)
+
+    def test_03_logout(self):
+        self.logout.logout()
 
 
 if __name__ == '__main__':
