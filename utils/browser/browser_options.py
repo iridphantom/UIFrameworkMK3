@@ -20,13 +20,13 @@ def chrome_options():
 def firefox_options():
     options = webdriver.FirefoxOptions()
 
-    # Firefox个人资料路径
+    # Firefox个人资料路径，并设置启动浏览器时调用本地缓存
     profile_path = r"C:\Users\1\AppData\Roaming\Mozilla\Firefox\Profiles\vby4egfz.default-release"
     options.add_argument("-profile")
     options.add_argument(profile_path)
     
     # kiosk 模式：最大化并隐藏浏览器 UI（推荐用于测试）
-    options.add_argument('-kiosk')
+    # options.add_argument('-kiosk')
 
     # 设置初始窗口大小（当非 kiosk/fullscreen 时有效）
     # options.add_argument("--width=1920")

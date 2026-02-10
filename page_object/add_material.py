@@ -1,5 +1,5 @@
 """
-    商品管理——商品信息，添加商品
+    商品管理页面，添加商品
 """
 
 from base_page.basepage import BasePage
@@ -16,10 +16,10 @@ class add_product(BasePage):
 
     # 点击库存数量--->然后找到对应的仓库，添加库存
     stock_title = ('xpath', '//div[text()="库存数量"]')
-    material_stock = ('xpath', '//span[@title="中图涿州库"]/../../div[3]')
+    material_stock = ('xpath', '//span[@title="中图涿州库"]/../../div[3]/label/input ')
 
-    # 保存按钮
-    material_save_button = ('xpath', '//span[text()="保 存"]')
+    # 定位保存按钮
+    material_save_button = ('xpath', '//button[span[text()="保 存"]]')
 
 
 
@@ -39,7 +39,7 @@ class add_product(BasePage):
         self.wait(1)
         self.click(*self.stock_title)
         self.wait(1)
-        self.input(*self.material_stock, content=stock)
+        self.input(*self.material_stock, content = stock)
         self.wait(1)
         self.click(*self.material_save_button)
-        self.wait(2)
+        self.wait(5)

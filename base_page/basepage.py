@@ -11,6 +11,7 @@ class BasePage:
     # 构造方法
     def __init__(self, driver):
         self.driver = driver
+        self.driver.implicitly_wait(5)
         # self.logger = get_logger(self.__class__.__name__)
         # self.logger = get_logger()
         self.logger = get_logger("uiLogger")

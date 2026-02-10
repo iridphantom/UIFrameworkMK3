@@ -3,8 +3,8 @@
   unit: 箱
   standard: 80*80
   stock: 200
-#-
-#  name: 拿铁冷萃咖啡液
-#  unit: 箱
-#  standard: 80*80
-#  stock: 120
+-
+  name: 拿铁冷萃咖啡液
+  unit: 箱
+  standard: 80*80
+  stock: 120
